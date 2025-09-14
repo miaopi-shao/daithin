@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>防水工程｜回報器</title>
+  <style>
+    :root { --gap: 12px; --radius: 12px; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans TC, "Microsoft JhengHei", Arial, sans-serif; background:#0b1220; color:#e9edf3; }
+    header { position:sticky; top:0; z-index:10; padding:14px 16px; background:linear-gradient(135deg,#0f1b31,#132441 60%,#0b1220); border-bottom:1px solid #1d2b4a; }
+    header h1 { margin:0; font-size:18px; }
+    .container { max-width: 980px; margin: 0 auto; padding: 16px; }
+    .grid { display:grid; grid-template-columns: 1fr; gap: var(--gap); }
+    @media (min-width: 980px){ .grid { grid-template-columns: 1.1fr 0.9fr; } }
+    .card { background:#0f1930; border:1px solid #1d2b4a; border-radius: var(--radius); padding:16px; box-shadow:0 8px 28px rgba(0,0,0,.25); }
+    .card h2 { margin:0 0 10px; font-size:16px; }
+    .row { display:grid; grid-template-columns: 1fr; gap: 10px; margin-bottom:12px; }
+    @media (min-width:640px){ .row.cols-2{ grid-template-columns: 1fr 1fr; } .row.cols-3{ grid-template-columns: 1fr 1fr 1fr; } }
+    label { display:block; font-size:12px; opacity:.9; margin-bottom:6px; }
+    input[type="text"], input[type="number"], select { width:100%; padding:10px 12px; border-radius:10px; border:1px solid #22345a; background:#0b1429; color:#e9edf3; outline:none; }
+    input:focus, .date-display:focus { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.15); }
+    .kv { display:grid; grid-template-columns: 1fr; gap:8px; }
+    .kv .line { display:grid; grid-template-columns: 110px 1fr; gap:8px; align-items:center; padding:10px 12px; background:#0b1429; border:1px solid #22345a; border-radius:10px; }
+    .kv .k { font-size:12px; opacity:.85; }
+    .kv .v { font-weight:800; font-size:16px; text-align:right; }
+    .flex { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid #29406f; background:#132650; color:#e9edf3; cursor:pointer; font-weight:600; }
+    .btn.ghost { background:transparent; }
+    .muted { font-size:12px; opacity:.75; }
+    .date-field { position: relative; }
+    .date-display { width:100%; padding:10px 12px; border-radius:10px; border:1px solid #22345a; background:#0b1429; color:#e9edf3; text-align:left; cursor:pointer; display:flex; align-items:center; justify-content:space-between; }
+    .date-display .ph { opacity:.6; }
+    .date-display .caret { margin-left:8px; opacity:.7; }
+    .date-panel { position:absolute; top: calc(100% + 6px); right:0; z-index:20; width:min(420px, 92vw); background:#0f1930; border:1px solid #1d2b4a; border-radius:12px; padding:12px; box-shadow:0 10px 28px rgba(0,0,0,.35); }
+    .date-panel .row { margin:0 0 10px; }
+    .date-panel select { background:#0b1429; border:1px solid #22345a; color:#e9edf3; border-radius:10px; padding:10px 12px; }
+    .date-panel .actions { display:flex; justify-content:flex-end; gap:8px; }
+    /* 讓 hidden 面板真的隱藏 */
+    [hidden] { display:none !important; }
+
+    /* === 員工清單（總工資自動加總用） === */
+    .empList { margin-top:8px; display:flex; flex-direction:column; gap:8px; }
+    .empRow { display:grid; grid-template-columns: 1fr 120px 36px; gap:8px; align-items:center; }
+    .empRow .empDel { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; border-radius:10px; }
+  </style>
+</head>
+<body>
+  <header><h1>防水工程｜回報器（最小欄位）</h1></header>
+  <div class="container grid">
+    <section class="card">
+      <h2>輸入</h2>
+      <div class="row cols-3">
+        <div>
+          <label>施工開始日期</label>
+          <div class="date-field" id="startField">
+            <button type="button" class="date-display" id="startDisplay"><span class="ph" id="startText">選擇 年 / 月 / 日</span><span class="caret">▾</span></button>
+            <div class="date-panel" id="startPanel" hidden>
+              <div class="row cols-3"><select id="startYear"></select><select id="startMonth"></select><select id="startDay"></select></div>
+              <div class="actions"><button class="btn ghost" data-act="cancel" data-k="start">取消</button><button class="btn" data-act="ok" data-k="start">確定</button></div>
+            </div>
+            <input type="hidden" id="startDate" />
+          </div>
+        </div>
+        <div>
+          <label>施工完成日期</label>
+          <div class="date-field" id="endField">
+            <button type="button" class="date-display" id="endDisplay"><span class="ph" id="endText">選擇 年 / 月 / 日</span><span class="caret">▾</span></button>
+            <div class="date-panel" id="endPanel" hidden>
+              <div class="row cols-3"><select id="endYear"></select><select id="endMonth"></select><select id="endDay"></select></div>
+              <div class="actions"><button class="btn ghost" data-act="cancel" data-k="end">取消</button><button class="btn" data-act="ok" data-k="end">確定</button></div>
+            </div>
+            <input type="hidden" id="endDate" />
+          </div>
+        </div>
+        <div><label>工地</label><input type="text" id="site" placeholder="例如：三本大序" /></div>
+      </div>
+      <div class="row cols-3">
+        <div><label>項目</label><input type="text" id="item" placeholder="例如：管道間" /></div>
+        <div><label>位置</label><input type="text" id="location" placeholder="例如：AB棟2F" /></div>
+        <div><label>數量</label><input type="number" min="0" step="1" id="qty" placeholder="例如：16" /></div>
+      </div>
+      <div class="row cols-3">
+        <div><label>單價</label><input type="number" min="0" step="1" id="unitPrice" placeholder="例如：150" /></div>
+        <div>
+          <label>收入</label>
+          <input type="number" min="0" step="1" id="costManual" placeholder="自動顯示計算值，可覆寫" />
+          <label class="muted" style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+            <input type="checkbox" id="costAuto" checked>
+            收入＝單價×數量（自動）
+          </label>
+        </div>
+        <div>
+          <label>總工資</label>
+          <input type="number" min="0" step="1" id="wageManual" placeholder="自動顯示加總，可覆寫" />
+          <label class="muted" style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+            <input type="checkbox" id="wageAuto" checked>
+            總工資＝各員工薪資加總（自動）
+          </label>
+          <div id="empList" class="empList"></div>
+          <div class="flex" style="margin-top:6px;"><button class="btn" type="button" id="empAdd">新增員工</button></div>
+        </div>
+      </div>
+      <div class="flex"><button class="btn" id="calc">計算 / 更新預覽</button><button class="btn ghost" id="clear">清空</button></div>
+      <div class="muted">備註：預設自動計算「收入＝單價×數量」、「總工資＝員工薪資合計」。若要手動覆寫，請取消勾選後輸入金額；「獲利 = 收入 − 總工資」。</div>
+    </section>
+    <section class="card">
+      <h2>顯示（即時預覽）</h2>
+      <div class="kv" id="preview">
+        <div class="line"><div class="k">施工開始日期：</div><div class="v" id="vStart">—</div></div>
+        <div class="line"><div class="k">施工完成日期：</div><div class="v" id="vEnd">—</div></div>
+        <div class="line"><div class="k">工地：</div><div class="v" id="vSite">—</div></div>
+        <div class="line"><div class="k">項目：</div><div class="v" id="vItem">—</div></div>
+        <div class="line"><div class="k">位置：</div><div class="v" id="vLocation">—</div></div>
+        <div class="line"><div class="k">數量：</div><div class="v" id="vQty">—</div></div>
+        <div class="line"><div class="k">單價：</div><div class="v" id="vUnit">—</div></div>
+        <div class="line"><div class="k">收入：</div><div class="v" id="vCost">—</div></div>
+        <div class="line"><div class="k">總工資：</div><div class="v" id="vWage">—</div></div>
+        <div class="line"><div class="k">獲利：</div><div class="v" id="vProfit">—</div></div>
+      </div>
+    </section>
+  </div>
+  <script>
+    // ===== 小工具 =====
+    const $ = (s) => document.querySelector(s);
+    const pad2 = (n) => String(n).padStart(2,'0');
+    const ymdToISO = (y,m,d) => `${y}-${pad2(m)}-${pad2(d)}`;
+    const isoToLabel = (iso) => { if(!iso) return ''; const [y,m,d] = iso.split('-'); return `${y}年/${m}月/${d}日`; };
+    const daysInMonth = (y,m) => new Date(y, m, 0).getDate(); // m: 1-12
+
+    const currency = new Intl.NumberFormat('zh-Hant-TW',{style:'currency',currency:'TWD'});
+
+    // ===== 成本/獲利計算 =====
+    const calcCost   = (unit, qty, costAuto, costManual) => costAuto ? unit * qty : costManual;
+    const calcProfit = (cost, wage) => cost - wage;
+
+    // ===== 員工名單工具 =====
+    const EMP_SEED = ['員工A','員工B','員工C','員工D','員工E'];
+    function addEmpRow(name='', pay=''){
+      const list = $('#empList');
+      const idx = list.querySelectorAll('.empRow').length;
+      const row = document.createElement('div');
+      row.className = 'empRow';
+      const defName = name || (EMP_SEED[idx] || `員工${idx+1}`);
+      row.innerHTML = `
+        <input type="text" class="empName" placeholder="姓名（可自訂）" value="${defName}">
+        <input type="number" class="empPay" min="0" step="1" placeholder="薪資" value="${pay}">
+        <button class="btn ghost empDel" type="button" title="刪除">✕</button>
+      `;
+      list.appendChild(row);
+      const onPay = ()=>{ if($('#wageAuto').checked) compute(); };
+      row.querySelector('.empName').addEventListener('input', ()=>{}); // 名稱不影響計算
+      row.querySelector('.empPay').addEventListener('input', onPay);
+      row.querySelector('.empPay').addEventListener('change', onPay);
+      row.querySelector('.empDel').addEventListener('click', ()=>{ row.remove(); compute(); });
+    }
+
+    function sumEmpPays(){
+      return Array.from(document.querySelectorAll('.empPay'))
+        .reduce((s,el)=> s + (parseFloat(el.value)||0), 0);
+    }
+
+    // ===== 主計算 =====
+    function compute(){
+      // 讀欄位
+      const site = $('#site').value.trim();
+      const item = $('#item').value.trim();
+      const location = $('#location').value.trim();
+      const qty = Math.max(0, parseFloat($('#qty').value)||0);
+      const unit = Math.max(0, parseFloat($('#unitPrice').value)||0);
+
+      const costAuto = $('#costAuto').checked;
+      const costManualVal = parseFloat($('#costManual').value)||0;
+      const cost = calcCost(unit, qty, costAuto, costManualVal);
+      if(costAuto){ $('#costManual').value = cost || ''; }
+
+      // 總工資：自動加總 or 手動
+      const wageAuto = $('#wageAuto').checked;
+      let wage = 0;
+      if(wageAuto){
+        wage = sumEmpPays();
+        $('#wageManual').value = wage || '';
+      } else {
+        wage = Math.max(0, parseFloat($('#wageManual').value)||0);
+      }
+
+      const profit = calcProfit(cost, wage);
+
+      // 預覽更新
+      $('#vSite').textContent = site || '—';
+      $('#vItem').textContent = item || '—';
+      $('#vLocation').textContent = location || '—';
+      $('#vQty').textContent = qty ? qty : '—';
+      $('#vUnit').textContent = unit ? currency.format(unit) : '—';
+      $('#vCost').textContent = cost ? currency.format(cost) : '—';
+      $('#vWage').textContent = wage ? currency.format(wage) : '—';
+      $('#vProfit').textContent = isFinite(profit) ? currency.format(profit) : '—';
+
+      // 日期預覽
+      const sISO = $('#startDate').value; const eISO = $('#endDate').value;
+      $('#vStart').textContent = sISO ? isoToLabel(sISO) : '—';
+      $('#vEnd').textContent   = eISO ? isoToLabel(eISO) : '—';
+    }
+
+    // 成本自動切換：控制可編輯與同步顯示
+    (function(){
+      const ca = $('#costAuto'); const cm = $('#costManual');
+      const toggle = ()=>{ cm.disabled = ca.checked; if(ca.checked){ const unit=Math.max(0,parseFloat($('#unitPrice').value)||0); const qty=Math.max(0,parseFloat($('#qty').value)||0); cm.value = unit*qty || ''; } };
+      if(ca && cm){ ca.addEventListener('change', ()=>{ toggle(); compute(); }); toggle(); }
+    })();
+
+    // 總工資自動切換：控制名單顯示與欄位可編輯
+    (function(){
+      const wa = $('#wageAuto'); const wm = $('#wageManual'); const list = $('#empList');
+      const toggle = ()=>{ const auto = wa.checked; wm.disabled = auto; list.style.display = auto ? 'block' : 'none'; compute(); };
+      if(wa){ wa.addEventListener('change', toggle); toggle(); }
+    })();
+
+    // === 連動輸入：即時更新 ===
+    function wireRealtime(){
+      const ids = ['site','item','location','qty','unitPrice','wageManual','costManual'];
+      const ca = $('#costAuto');
+      ids.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        const handler = ()=>{
+          // 單價/數量變動且勾選自動收入 → 同步收入欄
+          if((id==='qty' || id==='unitPrice') && ca.checked){
+            const unit = Math.max(0, parseFloat($('#unitPrice').value)||0);
+            const qty  = Math.max(0, parseFloat($('#qty').value)||0);
+            $('#costManual').value = unit*qty || '';
+          }
+          compute();
+        };
+        el.addEventListener('input', handler);
+        el.addEventListener('change', handler);
+      });
+    }
+
+    // ===== 日期選單模組 =====
+    function fillRange(sel, from, to){ sel.innerHTML = ''; for(let v=from; v<=to; v++){ const opt=document.createElement('option'); opt.value=String(v); opt.textContent=String(v); sel.appendChild(opt); } }
+
+    function setupDatePicker(key){
+      const display = $(`#${key}Display`);
+      const panel   = $(`#${key}Panel`);
+      const ySel    = $(`#${key}Year`);
+      const mSel    = $(`#${key}Month`);
+      const dSel    = $(`#${key}Day`);
+      const hidden  = $(`#${key}Date`);
+      const text    = $(`#${key}Text`);
+
+      // 年份區間：當前年份前後各 10 年
+      const now = new Date();
+      const Y = now.getFullYear();
+      fillRange(ySel, Y-10, Y+10);
+      fillRange(mSel, 1, 12);
+
+      function refreshDays(){
+        const y = parseInt(ySel.value,10);
+        const m = parseInt(mSel.value,10);
+        const dim = daysInMonth(y, m);
+        const prev = parseInt(dSel.value||'1',10);
+        fillRange(dSel, 1, dim);
+        if(prev<=dim) dSel.value = String(prev);
+      }
+
+      ySel.addEventListener('change', refreshDays);
+      mSel.addEventListener('change', refreshDays);
+
+      function open(){ panel.hidden = false; display.setAttribute('aria-expanded','true'); }
+      function close(){ panel.hidden = true; display.setAttribute('aria-expanded','false'); }
+
+      display.addEventListener('click', (e)=>{ e.stopPropagation(); // 不讓外層點擊關閉
+        // 預設選到今天（若尚未選擇）
+        let base = hidden.value ? new Date(hidden.value) : new Date();
+        ySel.value = String(base.getFullYear());
+        mSel.value = String(base.getMonth()+1);
+        refreshDays();
+        dSel.value = String(base.getDate());
+        open();
+      });
+
+      // 確定 / 取消
+      panel.addEventListener('click', (ev)=>{
+        const act = ev.target?.getAttribute?.('data-act');
+        if(!act) return;
+        ev.preventDefault(); ev.stopPropagation();
+        if(act==='cancel'){ close(); return; }
+        if(act==='ok'){
+          const y = parseInt(ySel.value,10), m=parseInt(mSel.value,10), d=parseInt(dSel.value,10);
+          const iso = ymdToISO(y,m,d);
+          hidden.value = iso;
+          text.textContent = isoToLabel(iso) || '選擇 年 / 月 / 日';
+          close(); compute();
+        }
+      });
+
+      // 點擊外部關閉
+      document.addEventListener('click', (evt)=>{
+        if(panel.hidden) return;
+        if(!panel.contains(evt.target) && !display.contains(evt.target)) close();
+      });
+    }
+
+    // 啟動日期選擇器
+    setupDatePicker('start');
+    setupDatePicker('end');
+
+    // 啟用即時連動
+    wireRealtime();
+
+    // 新增/預設員工
+    document.getElementById('empAdd').addEventListener('click', ()=> addEmpRow());
+    addEmpRow(); // 預設一筆：員工A
+
+    // 計算鍵
+    document.getElementById('calc').addEventListener('click', compute);
+
+    // 清空
+    document.getElementById('clear').addEventListener('click', ()=>{
+      ['site','item','location','qty','unitPrice','costManual','wageManual','startDate','endDate'].forEach(id=>{ const el = document.getElementById(id); if(el) el.value=''; });
+      $('#startText').textContent = '選擇 年 / 月 / 日';
+      $('#endText').textContent   = '選擇 年 / 月 / 日';
+      // 重置自動勾選
+      $('#costAuto').checked = true;
+      $('#wageAuto').checked = true;
+      // 重建員工清單
+      $('#empList').innerHTML = '';
+      addEmpRow();
+      compute();
+    });
+
+    // 初始一次
+    compute();
+
+    // ===== 測試（console）=====
+    console.assert(daysInMonth(2024,2)===29,'閏年 2024/2 應為 29');
+    console.assert(ymdToISO(2025,9,13)==='2025-09-13','ISO 格式應正確');
+    console.assert(calcProfit(2400,1052)===1348, '獲利應為 2400 - 1052 = 1348');
+  </script>
+</body>
+</html>
