@@ -1,0 +1,9 @@
+本資料夾結構說明：
+
+- 根目錄下為所有主要網頁 (HTML)，首頁為 index.html，各功能批次網頁皆以獨立檔案存在。
+- assets/ 下為各類多媒體及資源資料夾，包括 images/、videos/、music/、js/、css/。圖片、影片、音樂、JS、CSS 請分別歸檔於各自子目錄內。
+- README.md 詳述本專案檔案清單及用途簡介。
+- 備用頁面（backup_01.html ~ backup_04.html）供日後擴充或測試用途。
+- 每一功能或試算工具皆對應一個獨立 HTML 檔，便於維護管理。
+
+有任何問題歡迎聯絡 邵妙哉 aaappphh174805@gmail.com 。
