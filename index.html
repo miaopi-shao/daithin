@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>妙哉裝修網 - 首頁</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  <!-- 上方標題欄 -->
+  <header class="header">
+    <div class="header-left-top">v1.0.0</div>
+    <div class="header-center">妙哉裝修網</div>
+    <div class="header-left-bottom" id="today"></div>
+  </header>
+
+  <div class="main-area">
+    <!-- 左側導覽欄 -->
+    <nav class="nav-side">
+      <div class="nav-section">
+        <details open>
+          <summary>一．智慧建築確認區</summary>
+          <ul>
+            <li><a href="building_score.html">智慧建築2024版分數選單</a></li>
+            <li><a href="building_cost.html">智慧建築成本估算器</a></li>
+            <li style="color:rgba(0,0,0,0.4)">（未來擴充）</li>
+          </ul>
+        </details>
+        <details>
+          <summary>二．結構調整詢問區</summary>
+          <ul>
+            <li><a href="green_score.html">綠建築取分確認區</a></li>
+            <li><a href="green_cost.html">綠建築成本估算器</a></li>
+            <li style="color:rgba(0,0,0,0.4)">（未來擴充）</li>
+          </ul>
+        </details>
+        <details>
+          <summary>三．裝修架構估算選單</summary>
+          <ul>
+            <li><a href="waterproof.html">防水工程成本估算</a></li>
+            <li><a href="mud.html">泥作工程成本估算</a></li>
+            <li><a href="water_electric.html">水電工程成本估算</a></li>
+            <li><a href="weak_current.html">弱電工程成本估算</a></li>
+            <li><a href="woodwork.html">木工工程成本估算</a></li>
+            <li style="color:rgba(0,0,0,0.4)">（未來擴充）</li>
+          </ul>
+        </details>
+      </div>
+    </nav>
+
+    <!-- 中間主要內容欄 -->
+    <main class="main-content">
+      <section class="intro">
+        <h2>網站介紹</h2>
+        <p>歡迎來到妙哉裝修網，本網站提供：</p>
+        <ul>
+          <li>智慧建築分數與成本試算</li>
+          <li>結構調整及綠建築相關評估</li>
+          <li>裝修各工種工程成本快速估算</li>
+        </ul>
+      </section>
+      <section class="functions">
+        <h3>三大主項目功能說明</h3>
+        <ul>
+          <li><b>智慧建築確認區：</b>針對智慧建築規範提供分數評估與成本分析工具。</li>
+          <li><b>結構調整詢問區：</b>支援綠建築相關分數取得與預算估查功能。</li>
+          <li><b>裝修架構估算選單：</b>整合常見裝修工項成本查算，快速對比。</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- 下方細項欄 -->
+  <footer class="footer">
+    <p>感謝您的光臨！<br>
+      我是邵妙哉，一個自學的初級工程師<br>
+      信箱: aaappphh174805@gmail.com
+    </p>
+  </footer>
+
+  <script>
+    // 顯示今日日期
+    document.getElementById('today').textContent = new Date().toLocaleDateString('zh-Hant');
+  </script>
+</body>
+</html>
